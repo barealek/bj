@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/barealek/bj/client"
 	t "github.com/barealek/bj/types"
 	"github.com/barealek/bj/ui"
 
@@ -24,7 +25,14 @@ func ccmodel() bool {
 }
 
 func blackjack() int {
+	bj := client.CreateBJModel()
 
+	if _, err := tea.NewProgram(bj, tea.WithAltScreen()).Run(); err != nil {
+		fmt.Println("Error running program:", err)
+		os.Exit(1)
+	}
+
+	return 0
 }
 
 func main() {
@@ -32,14 +40,6 @@ func main() {
 		return
 	}
 
-	player = t.CreatePlayer()
-	dealer = t.CreateDealer()
-	dealer.DealSelf()
-	player.Hit(dealer.Deal())
-	dealer.DealSelf()
-	player.Hit(dealer.Deal())
-
-	fmt.Println(dealer.RenderDealer())
-	fmt.Println(player.RenderPlayer())
+	blackjack()
 
 }

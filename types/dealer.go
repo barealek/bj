@@ -21,21 +21,16 @@ func CreateDealer() *Dealer {
 	return dealer
 }
 
-func (dealer *Dealer) RenderDealer() string {
-	r := "===== DEALER ======\n"
+func (dealer *Dealer) Render() string {
+	var r string
 	if !dealer.revealed {
-		r += fmt.Sprintf("[ %s %v ]", dealer.cards[0].GetSuit(), dealer.cards[0].GetValue())
+		r += dealer.cards[0].Colored()
 		r += fmt.Sprintf("[ %s %s ]", "?", "?")
 	} else {
 		for _, card := range dealer.cards {
-			r += fmt.Sprintf("[ %s %v ]", card.GetSuit(), card.GetValue())
+			r += card.Colored()
 		}
 
-		r += fmt.Sprintf("\r\nTotal: %d\r\n", dealer.totalValue)
-
-		if dealer.altTotalValue > 0 {
-			r += fmt.Sprintf("Alternative Total: %d\r\n", dealer.altTotalValue)
-		}
 	}
 
 	return r
@@ -55,4 +50,43 @@ func (dealer *Dealer) DealSelf() {
 func (dealer *Dealer) Deal() Card {
 	card := dealer.deck.DealCard()
 	return card
+}
+
+func (dealer *Dealer) Reveal() {
+	dealer.revealed = true
+	for dealer.totalValue <= 16 {
+		dealer.DealSelf()
+	}
+}
+
+func (dealer *Dealer) GetCardValue() int {
+	if dealer.revealed {
+		if dealer.altTotalValue > 0 && dealer.totalValue <= 21 {
+			return dealer.altTotalValue
+		}
+		return dealer.totalValue
+	}
+	if v := dealer.cards[0].GetValue(); v != 1 {
+		return v
+	}
+	return 11
+}
+
+func (dealer *Dealer) IsRevealed() bool {
+	return dealer.revealed
+}
+
+func (dealer *Dealer) GetTotalValue() int {
+	return dealer.totalValue
+}
+
+func (dealer *Dealer) GetAltTotalValue() int {
+	return dealer.altTotalValue
+}
+
+func (dealer *Dealer) ResetScore() {
+	dealer.cards = []Card{}
+	dealer.totalValue = 0
+	dealer.altTotalValue = 0
+	dealer.revealed = false
 }

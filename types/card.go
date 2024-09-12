@@ -1,6 +1,10 @@
 package t
 
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/charmbracelet/lipgloss"
+)
 
 type Card struct {
 	suit  string
@@ -34,5 +38,13 @@ func NewCard(suit, value string) Card {
 	return Card{
 		suit:  suit,
 		value: value,
+	}
+}
+
+func (card Card) Colored() string {
+	if card.suit == "♠" || card.suit == "♥" {
+		return "[ " + lipgloss.NewStyle().Foreground(lipgloss.Color("#c55")).Render(card.suit+" "+card.value) + " ]"
+	} else {
+		return "[ " + lipgloss.NewStyle().Foreground(lipgloss.Color("#fff")).Render(card.suit+" "+card.value) + " ]"
 	}
 }

@@ -1,7 +1,5 @@
 package t
 
-import "fmt"
-
 type Player struct {
 	cards         []Card
 	totalValue    int
@@ -18,19 +16,11 @@ func CreatePlayer() *Player {
 	return &player
 }
 
-func (player *Player) RenderPlayer() string {
+func (player *Player) Render() string {
 	r := ""
-	r += fmt.Sprintf("\r\n===== SPILLER =====\n")
 	for _, card := range player.cards {
-		r += fmt.Sprintf("[ %s %s ]", card.suit, card.value)
+		r += card.Colored()
 	}
-
-	if player.altTotalValue > 0 {
-		r += fmt.Sprintf("\r\nVærdi: %d\r\n", player.altTotalValue)
-	} else {
-		r += fmt.Sprintf("\r\nVærdi: %d\r\n", player.totalValue)
-	}
-
 	return r
 }
 
@@ -48,4 +38,19 @@ func (player *Player) ResetScore() {
 	player.cards = []Card{}
 	player.totalValue = 0
 	player.altTotalValue = 0
+}
+
+func (p *Player) GetCardValue() int {
+	if p.altTotalValue > 0 && p.totalValue <= 21 {
+		return p.altTotalValue
+	}
+	return p.totalValue
+}
+
+func (p *Player) GetTotalValue() int {
+	return p.totalValue
+}
+
+func (p *Player) GetAltTotalValue() int {
+	return p.altTotalValue
 }
